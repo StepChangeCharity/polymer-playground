@@ -3,10 +3,12 @@
 <head>
       <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 	<script src="bower_components/platform/platform.js"></script>
+      <!-- Importing predefined custom elements -->
 	<link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
       <link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
       <link rel="import" href="bower_components/paper-menu/paper-menu.html">
       <link rel="import" href="bower_components/paper-item/paper-item.html">
+      <!-- Importing created custom element -->
       <link rel="import" href="elements/calculate-income.html">
       
             
@@ -85,7 +87,9 @@
       
 </head>
 <body fullbleed layout vertical>
-      
+            
+            <!-- Using a predefined custom element added as a package with Bower, from https://elements.polymer-project.org/ -->
+            <!-- TODO: Implement paper-dropdown-menu functionality -->
             <paper-toolbar>
                   <div class="title">Polymer playground</div>
                   <paper-dropdown-menu label="Examples">
@@ -96,7 +100,8 @@
                         </paper-menu>
                   </paper-dropdown-menu>
             </paper-toolbar>
-      
+            
+            <!-- Custom element in elements/ -->
             <calculate-income></calculate-income>
             
             <div id="results"></div>

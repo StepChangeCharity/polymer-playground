@@ -3,9 +3,12 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
+<!-- Declarative portion of a custom element -->
+<!-- TODO: Split into separate input / output elements? -->
 <dom-module id="calculate-income">
     
     <template>
+      <!-- Styles included in the element template -->'
       <style is="custom-style">
         
         h1 {
@@ -15,6 +18,8 @@
         
       </style>
         
+        <!-- There is a library of reusable elements at https://elements.polymer-project.org/ -->
+        <!-- Elements may come with a number of pre-defined attributes out of the box to take care of things like validation, etc. -->
         <paper-input id="inpMonInc" label="What do you get paid?" value="{{valMonInc}}" pattern="^[1-9]\d*(\.\d{1,2})?$" error-message="Please enter a valid amount" onfocusout="validate()">
           <div prefix>&#163;&nbsp;</div>
           <paper-icon-button suffix icon="clear"></paper-icon-button>
@@ -49,10 +54,16 @@
         * The Tax and NI figures in the calculator are based on the information you've given us and are only based on a very straight forward situation. If you think you might have to pay something different or you're not sure how to pay then you should get expert advice, from an organisation such as Tax Aid.
     
   </template>
-
+  
+  <!-- Script included in the element template -->
   <script>
+    // Imperative potion of the custom element - may be placed into a separate file
+    // TODO: Place into a separate file for a more modular approach?
     Polymer({
       is: 'calculate-income',
+      // Adding properties to the 'properties' object makes them part of the element's public API,
+      // allowing them to be configured from markup
+      // There are a list of keys a property can have here: https://www.polymer-project.org/1.0/docs/devguide/properties.html
       properties: {
         
         valMonInc: {
@@ -66,6 +77,9 @@
           type: String
         }
       },
+      // Can define the on-click event in the prototype
+      // Taken from CM's work on the angular2-playground
+      // TODO: Could do with separating out into multiple functions
       clkCalculate: function() {
         if(!this.$.inpMonInc.invalid) {
           
