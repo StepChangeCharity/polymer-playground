@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+	<script src="bower_components/platform/platform.js"></script>
+	<link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+      <link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+      <link rel="import" href="bower_components/paper-menu/paper-menu.html">
+      <link rel="import" href="bower_components/paper-item/paper-item.html">
+      <link rel="import" href="elements/calculate-income.html">
+      
+            
+            <!-- a custom element can have 'custom properties' in the <style> block, e.g.
+            
+            <dom-module id="custom-element">
+                  <style>
+                        :host {
+                              display: block;
+                        }
+                        .container {
+                              @apply(--custom-element-container-theme) <-- custom property
+                        }
+                        .header {
+                              @apply(--custom-element-header-theme)
+                        }
+                        .content {
+                              @apply(--custom-element-content-theme)
+                        }
+                   </style>
+                   <template>
+                   [...]
+            
+            These custom properties essentially replace having lots of css variables, e.g.
+                        .header {
+                              height: var(--custom-element-header-height);
+                              color: var(--custom-element-header-color);
+                              [...]
+                        }
+                        
+            We can then define a custom style and pass in several css variables at once to override the default ones in the element, e.g.
+            
+            <style is="custom-style">
+                  
+                  custom-element {
+                        --custom-element-header-theme {
+                              height: 50px;
+                              color: #00ff00;
+                              [...]
+                        };
+                  }
+                  
+            </style>
+           
+            This essentially replaces theming elements using selectors that pierce into the shadow DOM, e.g. ::shadow; /deep/ -
+            those methods break encapsulation and reduce performance.
+            
+            
+            In the example below, element <paper-toolbar> has the custom property @apply(--paper-toolbar) allowing for css to be passed through
+             to the top level css
+            -->
+           
+           <style is="custom-style">
+           
+            paper-toolbar {
+                  --paper-toolbar: {
+                        position: relative;
+                        height: 60px;
+                  };
+                  
+                  --paper-toolbar-background: #0000ff;
+            
+            }
+            
+            paper-dropdown-menu {
+                 
+                 --paper-dropdown-menu: {
+                      margin-top: -10px;
+                 };
+                  
+                  --paper-input-container-color: #ffffff;
+                  --paper-input-container-input-color: #ffb6c1;
+            }
+            
+           </style>
+      
+</head>
+<body fullbleed layout vertical>
+      
+            <paper-toolbar>
+                  <div class="title">Polymer playground</div>
+                  <paper-dropdown-menu label="Examples">
+                        <paper-menu class="dropdown-content">
+                              <paper-item>Party List</paper-item>
+                              <paper-item>Forms</paper-item>
+                              <paper-item>Self-employed calculator</paper-item>
+                        </paper-menu>
+                  </paper-dropdown-menu>
+            </paper-toolbar>
+      
+            <calculate-income></calculate-income>
+            
+            <div id="results"></div>
+</body>
+</html>

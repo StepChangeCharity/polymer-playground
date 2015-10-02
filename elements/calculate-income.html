@@ -1,0 +1,144 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<dom-module id="calculate-income">
+    
+    <template>
+      <style is="custom-style">
+        
+        h1 {
+            font-family: 'Roboto', 'Noto', sans-serif;
+            font-size: 14px;
+        }
+        
+      </style>
+        
+        <paper-input id="inpMonInc" label="What do you get paid?" value="{{valMonInc}}" pattern="^[1-9]\d*(\.\d{1,2})?$" error-message="Please enter a valid amount" onfocusout="validate()">
+          <div prefix>&#163;&nbsp;</div>
+          <paper-icon-button suffix icon="clear"></paper-icon-button>
+        </paper-input>
+        
+        <paper-input id="inpBusCos" label="What are your business costs?" value="{{valBusCos}}" pattern="^[1-9]\d*(\.\d{1,2})?$" error-message="Please enter a valid amount" onfocusout="validate()">
+          <div prefix>&#163;&nbsp;</div>
+          <paper-icon-button suffix icon="clear"></paper-icon-button>
+        </paper-input>
+        
+        <paper-button raised id="btnCalc" on-click="clkCalculate"><h1>Calculate</h1></paper-button>
+        
+        <p>
+        <h2>Results</h2>
+        <ul>
+          <li>Your monthly income after your business costs is: <span>{{resMonInc}}</span></li>
+          <li>Your yearly income after your business costs is: <span>{{resYearInc}}</span></li>
+        </ul>
+        <h2>Income Tax*</h2>
+        <ul>
+          <li>This is the amount of tax you need to set aside each month: <span>{{resMonTax}}</span></li>
+        </ul>
+        <h2>National Insurance (NI)*</h2>
+        <ul>
+          <li>This is the amount of class 2 NI you need to set aside each month: <span>{{resMonNI2}}</span></li>
+          <li>This is the amount of class 4 NI you need to set aside each month: <span>{{resMonNI4}}</span></li>
+        </ul>
+        <h2>Take Home Pay</h2>
+        <ul>
+          <li>Your monthly take home pay: <span>{{resMonTHP}}</span></li>
+        </ul>
+        * The Tax and NI figures in the calculator are based on the information you've given us and are only based on a very straight forward situation. If you think you might have to pay something different or you're not sure how to pay then you should get expert advice, from an organisation such as Tax Aid.
+    
+  </template>
+
+  <script>
+    Polymer({
+      is: 'calculate-income',
+      properties: {
+        
+        valMonInc: {
+          type: String
+          // observer: 'alertOnChange'
+          },
+        valBusCos: {
+          type: String
+        },
+        resMonInc: {
+          type: String
+        }
+      },
+      clkCalculate: function() {
+        if(!this.$.inpMonInc.invalid) {
+          
+          //Calendar
+          var YEAR_MONTHS = 12;
+          var YEAR_WEEKS = 52;
+          //NI Class 2
+          var NI_CLASS2_WEEK_MONETARY_RATE = 2.80;
+          var NI_CLASS2_LOWERBAND = 5965;
+          //NI Class 4
+          var NI_CLASS4_LOWER_PERCENT_RATE = 0.09;
+          var NI_CLASS4_UPPER_PERCENT_RATE = 0.02;
+          var NI_CLASS4_LOWERBAND = 8060;
+          var NI_CLASS4_UPPERBAND = 42385;
+          //Income Tax
+          var TAX_PERSONAL_ALLOWANCE = 10600;
+          var TAX_BASIC_UPPERBAND = 31785;
+          var TAX_HIGHER_LOWERBAND = 42385;
+          var TAX_HIGHER_UPPERBAND = 150000;
+          var TAX_BASIC_PERCENT_RATE = 0.2;
+          var TAX_HIGHER_PERCENT_RATE = 0.4;
+          var TAX_ADDITIONAL_PERCENT_RATE = 0.45;
+          
+          var monthlyGrossIncome = this.valMonInc - this.valBusCos;
+          var incomeYearlyAfterCosts = monthlyGrossIncome * YEAR_MONTHS;
+          var taxableIncome = incomeYearlyAfterCosts - TAX_PERSONAL_ALLOWANCE;
+          var yearlyTaxLiability = 0;
+          if(taxableIncome > 0 && taxableIncome <= TAX_BASIC_UPPERBAND)
+          {
+              yearlyTaxLiability += taxableIncome * TAX_BASIC_PERCENT_RATE;
+          }
+          if(taxableIncome > TAX_BASIC_UPPERBAND && taxableIncome <= TAX_HIGHER_UPPERBAND)
+          {
+              yearlyTaxLiability += TAX_BASIC_UPPERBAND * TAX_BASIC_PERCENT_RATE;
+              yearlyTaxLiability += (taxableIncome - TAX_BASIC_UPPERBAND) * TAX_HIGHER_PERCENT_RATE;
+          }
+          if(taxableIncome > TAX_HIGHER_UPPERBAND)
+          {
+              yearlyTaxLiability += TAX_BASIC_UPPERBAND * TAX_BASIC_PERCENT_RATE;
+              yearlyTaxLiability += (TAX_HIGHER_UPPERBAND - TAX_HIGHER_LOWERBAND) * TAX_HIGHER_PERCENT_RATE;
+              yearlyTaxLiability += (taxableIncome - TAX_HIGHER_UPPERBAND) * TAX_ADDITIONAL_PERCENT_RATE;
+          }
+          var monthlyTaxLiability = yearlyTaxLiability / YEAR_MONTHS;
+          var monthlyNI2Liability = 0;
+          if(incomeYearlyAfterCosts >= NI_CLASS2_LOWERBAND)
+          {
+            monthlyNI2Liability = (NI_CLASS2_WEEK_MONETARY_RATE * YEAR_WEEKS) / YEAR_MONTHS;
+          }
+          var yearlyNI4Liability = 0;
+          if(incomeYearlyAfterCosts >= NI_CLASS4_LOWERBAND)
+          {
+            if(incomeYearlyAfterCosts <= NI_CLASS4_UPPERBAND)
+            {
+                yearlyNI4Liability += incomeYearlyAfterCosts * NI_CLASS4_LOWER_PERCENT_RATE;   
+            }
+            else
+            {
+                yearlyNI4Liability += NI_CLASS4_UPPERBAND * NI_CLASS4_LOWER_PERCENT_RATE;
+                yearlyNI4Liability += (income - NI_CLASS4_UPPERBAND) * NI_CLASS4_UPPER_PERCENT_RATE;
+            }
+          }
+          var monthlyNI4Liability = yearlyNI4Liability / YEAR_MONTHS;
+          var monthlyNetIncome = monthlyGrossIncome - (monthlyTaxLiability + monthlyNI2Liability + monthlyNI4Liability);
+          
+          this.resMonInc = "£" + monthlyGrossIncome;
+          this.resYearInc = "£" + incomeYearlyAfterCosts;
+          this.resMonTax = "£" + monthlyTaxLiability;
+          this.resMonNI2 = "£" + monthlyNI2Liability;
+          this.resMonNI4 = "£" + monthlyNI4Liability;
+          this.resMonTHP = "£" + monthlyNetIncome
+        };
+      }
+    });
+  </script>
+
+</dom-module>
