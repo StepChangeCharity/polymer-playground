@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
@@ -8,7 +9,7 @@
 <dom-module id="calculate-income">
     
     <template>
-      <!-- Styles included in the element template -->'
+      <!-- Styles included in the element template -->
       <style is="custom-style">
         
         h1 {
@@ -16,42 +17,76 @@
             font-size: 14px;
         }
         
+        paper-card {
+          width: 700px;
+          float: center;
+        }
+        
       </style>
         
         <!-- There is a library of reusable elements at https://elements.polymer-project.org/ -->
         <!-- Elements may come with a number of pre-defined attributes out of the box to take care of things like validation, etc. -->
-        <paper-input id="inpMonInc" label="What do you get paid?" value="{{valMonInc}}" pattern="^[1-9]\d*(\.\d{1,2})?$" error-message="Please enter a valid amount" onfocusout="validate()">
-          <div prefix>&#163;&nbsp;</div>
-          <paper-icon-button suffix icon="clear"></paper-icon-button>
-        </paper-input>
+        <div fullbleed layout horizontal flex>
+        <paper-card>
+          
+          <div class="card-content">
+            <paper-input id="inpMonInc" label="What do you get paid?" value="{{valMonInc}}" pattern="^[1-9]\d*(\.\d{1,2})?$" error-message="Please enter a valid amount" onfocusout="validate()">
+              <div prefix>&#163;&nbsp;</div>
+              <paper-icon-button suffix icon="clear"></paper-icon-button>
+            </paper-input>
+            
+            <paper-input id="inpBusCos" label="What are your business costs?" value="{{valBusCos}}" pattern="^[1-9]\d*(\.\d{1,2})?$" error-message="Please enter a valid amount" onfocusout="validate()">
+              <div prefix>&#163;&nbsp;</div>
+              <paper-icon-button suffix icon="clear"></paper-icon-button>
+            </paper-input>
+            
+            <paper-button raised id="btnCalc" on-click="clkCalculate"><h1>Calculate</h1></paper-button>
+          </div>
         
-        <paper-input id="inpBusCos" label="What are your business costs?" value="{{valBusCos}}" pattern="^[1-9]\d*(\.\d{1,2})?$" error-message="Please enter a valid amount" onfocusout="validate()">
-          <div prefix>&#163;&nbsp;</div>
-          <paper-icon-button suffix icon="clear"></paper-icon-button>
-        </paper-input>
-        
-        <paper-button raised id="btnCalc" on-click="clkCalculate"><h1>Calculate</h1></paper-button>
-        
-        <p>
-        <h2>Results</h2>
-        <ul>
-          <li>Your monthly income after your business costs is: <span>{{resMonInc}}</span></li>
-          <li>Your yearly income after your business costs is: <span>{{resYearInc}}</span></li>
-        </ul>
-        <h2>Income Tax*</h2>
-        <ul>
-          <li>This is the amount of tax you need to set aside each month: <span>{{resMonTax}}</span></li>
-        </ul>
-        <h2>National Insurance (NI)*</h2>
-        <ul>
-          <li>This is the amount of class 2 NI you need to set aside each month: <span>{{resMonNI2}}</span></li>
-          <li>This is the amount of class 4 NI you need to set aside each month: <span>{{resMonNI4}}</span></li>
-        </ul>
-        <h2>Take Home Pay</h2>
-        <ul>
-          <li>Your monthly take home pay: <span>{{resMonTHP}}</span></li>
-        </ul>
-        * The Tax and NI figures in the calculator are based on the information you've given us and are only based on a very straight forward situation. If you think you might have to pay something different or you're not sure how to pay then you should get expert advice, from an organisation such as Tax Aid.
+        </paper-card>
+        <br>
+        <br>
+        <paper-card>
+         
+          <div class="card-content">
+            <paper-item><h2>Results</h2></paper-item>
+            <br>
+            <paper-item>
+            <ul>
+              <li>Your monthly income after your business costs is: <span style="color:red;">{{resMonInc}}</span></li>
+              <li>Your yearly income after your business costs is: <span style="color:red;">{{resYearInc}}</span></li>
+            </ul>
+            </paper-item>
+            <hr>
+            <paper-item><h3>Income Tax*</h3></paper-item>
+            <paper-item>
+              <ul>
+                <li>This is the amount of tax you need to set aside each month: <span style="color:red;">{{resMonTax}}</span></li>
+              </ul>
+            </paper-item>
+            <hr>
+            <paper-item><h3>National Insurance (NI)*</h3></paper-item>
+            <paper-item>
+              <ul>
+                <li>This is the amount of class 2 NI you need to set aside each month: <span style="color:red;">{{resMonNI2}}</span></li>
+                <li>This is the amount of class 4 NI you need to set aside each month: <span style="color:red;">{{resMonNI4}}</span></li>
+              </ul>
+            </paper-item>
+            <hr>
+            <paper-item><h3>Take Home Pay</h3></paper-item>
+            <paper-item>
+              <ul>
+                <li>Your monthly take home pay: <span style="color:red;">{{resMonTHP}}</span></li>
+              </ul>
+            </paper-item>
+            <hr>
+            <br>
+            <paper-item>
+              * The Tax and NI figures in the calculator are based on the information you've given us and are only based on a very straight forward situation. If you think you might have to pay something different or you're not sure how to pay then you should get expert advice, from an organisation such as Tax Aid.
+            </paper-item>
+          </div>
+        </paper-card>
+        </div>
     
   </template>
   
@@ -144,12 +179,12 @@
           var monthlyNI4Liability = yearlyNI4Liability / YEAR_MONTHS;
           var monthlyNetIncome = monthlyGrossIncome - (monthlyTaxLiability + monthlyNI2Liability + monthlyNI4Liability);
           
-          this.resMonInc = "£" + monthlyGrossIncome;
-          this.resYearInc = "£" + incomeYearlyAfterCosts;
-          this.resMonTax = "£" + monthlyTaxLiability;
-          this.resMonNI2 = "£" + monthlyNI2Liability;
-          this.resMonNI4 = "£" + monthlyNI4Liability;
-          this.resMonTHP = "£" + monthlyNetIncome
+          this.resMonInc = "£" + monthlyGrossIncome.toFixed(2);
+          this.resYearInc = "£" + incomeYearlyAfterCosts.toFixed(2);
+          this.resMonTax = "£" + monthlyTaxLiability.toFixed(2);
+          this.resMonNI2 = "£" + monthlyNI2Liability.toFixed(2);
+          this.resMonNI4 = "£" + monthlyNI4Liability.toFixed(2);
+          this.resMonTHP = "£" + monthlyNetIncome.toFixed(2)
         };
       }
     });
